@@ -41,8 +41,8 @@ export default function ClientSetupPage() {
       }
 
       // Save HOST config
-      await window.db.saveConfig('host_ip', hostIp);
-      await window.db.saveConfig('host_port', LAN_PORT);
+      await window.pos.saveConfig('host_ip', hostIp);
+      await window.pos.saveConfig('host_port', LAN_PORT);
 
       localStorage.setItem('host_ip', hostIp);
       localStorage.setItem('host_port', LAN_PORT.toString());
@@ -57,8 +57,8 @@ export default function ClientSetupPage() {
   }
 
   async function resetClientSetup() {
-    await window.db.saveConfig('host_ip', null);
-    await window.db.saveConfig('host_port', null);
+    await window.pos.saveConfig('host_ip', null);
+    await window.pos.saveConfig('host_port', null);
 
     localStorage.removeItem('host_ip');
     localStorage.removeItem('host_port');
