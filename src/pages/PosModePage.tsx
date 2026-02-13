@@ -9,9 +9,6 @@ export default function PosModePage() {
       // 1️⃣ Save to SQLite (source of truth)
       await window.pos.saveConfig('pos_mode', mode);
 
-      // 2️⃣ Cache for fast reads
-      localStorage.setItem('pos_mode', mode);
-
       console.log('[POS MODE] Selected:', mode);
 
       // 3️⃣ HARD RELOAD APP (IMPORTANT)
