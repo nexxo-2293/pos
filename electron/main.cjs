@@ -353,7 +353,32 @@ ipcMain.handle('order:update-cart-item-note', (_, args) => {
 // ----------------------------------
 ipcMain.handle('lan:discover-host', async () => {
   return new Promise((resolve, reject) => {
+
     const socket = dgram.createSocket('udp4');
+    let resolved = false;
+
+    socket.on('error', (err) => {
+      if (!resolved) {
+        resolved = true;
+        try { socket.close(); } catch {}
+        reject(err);
+      }
+    });
+
+    socket.on('message', (msg) => {
+      if (resolved) return;
+
+      resolved = true;
+
+      try {
+        const data = JSON.parse(msg.toString());
+        socket.close();
+        resolve(data);
+      } catch (err) {
+        try { socket.close(); } catch {}
+        reject(err);
+      }
+    });
 
     socket.bind(() => {
       socket.setBroadcast(true);
@@ -361,23 +386,16 @@ ipcMain.handle('lan:discover-host', async () => {
       socket.send(message, 0, message.length, LAN_PORT, '255.255.255.255');
     });
 
-    socket.on('message', msg => {
-      try {
-        const data = JSON.parse(msg.toString());
-        socket.close();
-        resolve(data);
-      } catch (err) {
-        socket.close();
-        reject(err);
-      }
-    });
-
     setTimeout(() => {
-      socket.close();
-      reject(new Error('No host found'));
+      if (!resolved) {
+        resolved = true;
+        try { socket.close(); } catch {}
+        reject(new Error('No host found'));
+      }
     }, 2000);
   });
 });
+
 
 
 
