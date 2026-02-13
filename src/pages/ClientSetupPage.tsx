@@ -20,7 +20,7 @@ export default function ClientSetupPage() {
     setStatus('searching');
 
     try {
-      const result = await window.db.discoverHost();
+      const result = await window.pos.discoverHost();
       setHostIp(result.ip);
       setStatus('found');
     } catch {
